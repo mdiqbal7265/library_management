@@ -69,7 +69,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'user_register') {
     $email = $validation->sanitize_data($_POST['email']);
     $password = $validation->sanitize_data($_POST['password']);
     $verification_code = md5(uniqid());
-    $unique_id = 'LM' . rand(0, 1000000);
+    $unique_id = 'U' . rand(0, 1000000);
     $subject = 'Registration Verification for LMS Application Demo';
     $body = '<p>Thank you for registering for Chat Application Demo.</p>
         <p>This is a verification email, please click the link to verify your email address.</p>
@@ -401,4 +401,101 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit_book') {
     $db->where('book_id', $id);
     $data = $db->getOne('lms_book');
     echo json_encode($data);
+}
+
+// Update Book
+if (isset($_POST['action']) && $_POST['action'] == 'update_book') {
+    $id = $_POST['id'];
+    $name = $validation->sanitize_data($_POST['book_name']);
+    $author = $validation->sanitize_data($_POST['book_author']);
+    $category = $validation->sanitize_data($_POST['book_category']);
+    $location_rack = $validation->sanitize_data($_POST['book_location_rack']);
+    $isbn_number = $validation->sanitize_data($_POST['book_isbn_number']);
+    $no_of_copy = $validation->sanitize_data($_POST['book_no_of_copy']);
+    $status = isset($_POST['book_status']) ? 'Enable' : 'Disable';
+
+    $data = [
+        'book_name' => $name,
+        'book_author' => $author,
+        'book_category' => $category,
+        'book_location_rack' => $location_rack,
+        'book_isbn_number' => $isbn_number,
+        'book_no_of_copy' => $no_of_copy,
+        'book_status' => $status,
+        'book_updated_on' => date('Y-m-d h:i:s'),
+    ];
+    $db->where('book_id', $id);
+    if ($db->update('lms_book', $data)) {
+        echo 'update';
+    } else {
+        echo $db->getLastError();
+    }
+}
+
+// Delete Book
+if (isset($_POST['action']) && $_POST['action'] == 'dltbook') {
+    $id = $_POST['id'];
+    $db->where('book_id', $id);
+    $db->delete('lms_book');
+}
+
+// Fetch User
+if (isset($_POST['action']) && $_POST['action'] == 'fetchUser') {
+    $output = '';
+    $data = $db->get('lms_user');
+    if ($data) {
+        foreach ($data as $key => $value) {
+            $output .= "<tr>
+                <td><img src='assets/dist/img/user/{$value['user_profile']}' alt='' width='64px'></td>
+                <td>{$value['user_unique_id']}</td>
+                <td>{$value['user_name']}</td>
+                <td>{$value['user_email_address']}</td>
+                <td>{$value['user_contact_no']}</td>
+                <td>{$value['user_address']}</td>
+                <td>{$value['user_verification_status']}</td>
+                <td>" . ($value['user_status'] == 'Enable' ? '<span class="badge badge-success">Enable</span>' : '<span class="badge badge-danger">Disable</span>') . "</td>
+                <td>" . date("d M Y, H:i A", strtotime($value['user_created_on'])) . "</td>
+                <td>" . date("d M Y, H:i A", strtotime($value['user_updated_on'])) . "</td>
+                <td>
+                    <a href='#' id='{$value['user_id']}' class='btn btn-danger btn-sm dltUser'><i class='fa fa-trash'></i></a>
+                </td>
+            </tr>";
+        }
+
+        echo $output;
+    } else {
+        echo '<h2 class="text-danger">No User available here!</h2>';
+    }
+}
+
+// Delete User
+if (isset($_POST['action']) && $_POST['action'] == 'dltUser') {
+    $id = $_POST['id'];
+    $db->where('user_id', $id);
+    $db->delete('lms_user');
+}
+
+// Fetch Issue Book
+if (isset($_POST['action']) && $_POST['action'] == 'fetchIssueBook') {
+    $output = '';
+    $data = $db->get('lms_issue_book');
+    if ($data) {
+        foreach ($data as $key => $value) {
+            $output .= "<tr>
+                <td>{$value['book_id']}</td>
+                <td>{$value['user_id']}</td>
+                <td>" . date("d M Y, H:i A", strtotime($value['issue_date_time'])) . "</td>
+                <td>" . date("d M Y, H:i A", strtotime($value['return_date_time'])) . "</td>
+                <td>{$value['book_fines']}</td>
+                <td><span class='badge badge-info'>".$value['book_issue_status']."</span></td>
+                <td>
+                    <a href='#' id='{$value['issue_book_id']}' class='btn btn-danger btn-sm viewIssue'><i class='fa fa-eye'></i></a>
+                </td>
+            </tr>";
+        }
+
+        echo $output;
+    } else {
+        echo '<h2 class="text-danger">No Issue Book available here!</h2>';
+    }
 }

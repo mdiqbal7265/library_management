@@ -21,12 +21,13 @@ $(document).ready(function() {
   function datatable(id) {
     $(id)
       .DataTable({
+        scrollX: true,
         responsive: true,
         lengthChange: false,
-        autoWidth: false,
+        autoWidth: true,
         retrieve: true,
         paging: true,
-        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        buttons: ["copy", "excel", "pdf", "print", "colvis"]
       })
       .buttons()
       .container()
@@ -447,12 +448,20 @@ $(document).ready(function() {
         data = JSON.parse(response);
         $("#id").val(data.book_id);
         $("#book_name").val(data.book_name);
-        $('#book_author option[value="' + data.book_author + '"]').prop("selected", true);
-        $('#book_author_badge').text(data.book_author);
-        $('#book_category option[value="' + data.book_category + '"]').prop("selected", true);
-        $('#book_category_badge').text(data.book_category);
-        $('#book_location_rack option[value="' + data.book_location_rack + '"]').prop("selected", true);
-        $('#book_location_rack_badge').text(data.book_location_rack);
+        $('#book_author option[value="' + data.book_author + '"]').prop(
+          "selected",
+          true
+        );
+        $("#book_author_badge").text(data.book_author);
+        $('#book_category option[value="' + data.book_category + '"]').prop(
+          "selected",
+          true
+        );
+        $("#book_category_badge").text(data.book_category);
+        $(
+          '#book_location_rack option[value="' + data.book_location_rack + '"]'
+        ).prop("selected", true);
+        $("#book_location_rack_badge").text(data.book_location_rack);
         $("#book_isbn_number").val(data.book_isbn_number);
         $("#book_no_of_copy").val(data.book_no_of_copy);
         if (data.book_status === "Enable") {
@@ -463,4 +472,78 @@ $(document).ready(function() {
       }
     });
   });
+
+  // Update Book
+  $("#update_book_btn").click(function(e) {
+    $("#update_book_btn").val("Please Wait...");
+    $.ajax({
+      type: "POST",
+      url: "lib/action.php",
+      data: $("#edit_book_form").serialize() + "&action=update_book",
+      success: function(response) {
+        // console.log(response);
+        $("#update_book_btn").val("Update Book");
+        $("#edit_book_form")[0].reset();
+        $("#edit_book_modal").modal("hide");
+        if (response == "update") {
+          Toast.fire({
+            icon: "success",
+            title: "Book Updated Successfully!"
+          });
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: response
+          });
+        }
+        fetchBook();
+      }
+    });
+  });
+
+  // Delete Book
+  $("body").on("click", ".dltbook", function(e) {
+    e.preventDefault();
+    id = $(this).attr("id");
+    deleteData("dltbook", id, fetchBook);
+  });
+
+  /*********************** User Section **************************************/
+
+  //  Fetch User
+  fetchUser();
+  function fetchUser() {
+    $.ajax({
+      type: "POST",
+      url: "lib/action.php",
+      data: { action: "fetchUser" },
+      success: function(response) {
+        $("#user_table_body").html(response);
+        datatable("#user_table");
+      }
+    });
+  }
+
+  // Delete User
+  $("body").on("click", ".dltUser", function(e) {
+    e.preventDefault();
+    id = $(this).attr("id");
+    deleteData("dltUser", id, fetchUser);
+  });
+
+  /*********************** Issue Book Section **************************************/
+
+  //Fetch Issue Book
+  fetchIssueBook();
+  function fetchIssueBook() {
+    $.ajax({
+      type: "POST",
+      url: "lib/action.php",
+      data: { action: "fetchIssueBook" },
+      success: function(response) {
+        $("#issue_book_table_body").html(response);
+        datatable("#issue_book_table");
+      }
+    });
+  }
 });

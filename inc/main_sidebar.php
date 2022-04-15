@@ -65,6 +65,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="user.php" class="nav-link">
+                                <i class="nav-icon fa fa-users"></i>
+                                <p>User</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="issue-book.php" class="nav-link">
+                                <i class="nav-icon fa fa-books"></i>
+                                <p>Issue Book</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="#" class="nav-link" id="logout">
                                 <i class="nav-icon fa fa-sign-out-alt"></i>
                                 <p>Logout</p>
