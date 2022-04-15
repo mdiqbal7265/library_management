@@ -448,8 +448,11 @@ $(document).ready(function() {
         $("#id").val(data.book_id);
         $("#book_name").val(data.book_name);
         $('#book_author option[value="' + data.book_author + '"]').prop("selected", true);
+        $('#book_author_badge').text(data.book_author);
         $('#book_category option[value="' + data.book_category + '"]').prop("selected", true);
+        $('#book_category_badge').text(data.book_category);
         $('#book_location_rack option[value="' + data.book_location_rack + '"]').prop("selected", true);
+        $('#book_location_rack_badge').text(data.book_location_rack);
         $("#book_isbn_number").val(data.book_isbn_number);
         $("#book_no_of_copy").val(data.book_no_of_copy);
         if (data.book_status === "Enable") {
