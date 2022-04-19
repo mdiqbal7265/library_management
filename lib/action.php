@@ -1,5 +1,6 @@
 <?php
 session_start();
+date_default_timezone_set('Asia/Dhaka');
 require_once 'classes/Validation.php';
 require_once 'classes/MysqliDb.php';
 require_once 'classes/Helper.php';
@@ -487,9 +488,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'fetchIssueBook') {
                 <td>" . date("d M Y, H:i A", strtotime($value['issue_date_time'])) . "</td>
                 <td>" . date("d M Y, H:i A", strtotime($value['return_date_time'])) . "</td>
                 <td>{$value['book_fines']}</td>
-                <td><span class='badge badge-info'>".$value['book_issue_status']."</span></td>
+                <td><span class='badge badge-info'>" . $value['book_issue_status'] . "</span></td>
                 <td>
-                    <a href='#' id='{$value['issue_book_id']}' class='btn btn-danger btn-sm viewIssue'><i class='fa fa-eye'></i></a>
+                    <a href='#' id='{$value['issue_book_id']}' class='btn btn-danger btn-sm viewIssue' data-target='#view_book_modal' data-toggle='modal'><i class='fa fa-eye'></i></a>
                 </td>
             </tr>";
         }
@@ -498,4 +499,71 @@ if (isset($_POST['action']) && $_POST['action'] == 'fetchIssueBook') {
     } else {
         echo '<h2 class="text-danger">No Issue Book available here!</h2>';
     }
+}
+
+// Fetch Book for Issued Book
+if (isset($_POST['action']) && $_POST['action'] == 'query_book') {
+    $query = $_POST['query'];
+    $output = '';
+    $db->where('book_isbn_number', $query . '%', 'Like');
+    $data = $db->get('lms_book');
+    if ($data) {
+        foreach ($data as $value) {
+            $output .= '<li class="list-group-item isbn_number_search"><a href="javascript:void(0)" id="isbn_number_queries" style="color:#333;text-decoration:none;"><span id="isbn_number_text">' . $value["book_isbn_number"] . '</span><span>| ' . $value["book_name"] . '</span></a></li>';
+        }
+
+        echo $output;
+    } else {
+        echo '<h2 class="text-danger">No Book available here!</h2>';
+    }
+}
+
+// Fetch User for issued Book
+if (isset($_POST['action']) && $_POST['action'] == 'query_user') {
+    $query = $_POST['query'];
+    $output = '';
+    $db->where('user_unique_id', '%' . $query . '%', 'Like');
+    $data = $db->get('lms_user');
+    if ($data) {
+        foreach ($data as $value) {
+            $output .= '<li class="list-group-item user_search"><a href="javascript:void(0)" id="user_queries" style="color:#333;text-decoration:none;"><span id="user_text">' . $value["user_unique_id"] . '</span><span>| ' . $value["user_name"] . '</span></a></li>';
+        }
+
+        echo $output;
+    } else {
+        echo '<h2 class="text-danger">No User available here!</h2>';
+    }
+}
+
+
+// Add Issue Book
+if (isset($_POST['action']) && $_POST['action'] == 'add_issue_book') {
+    $book_id = $validation->sanitize_data($_POST['book_id']);
+    $user_id = $validation->sanitize_data($_POST['user_id']);
+    $expected_return_date = $validation->sanitize_data($_POST['expected_return_date']);
+
+    $data = [
+        'book_id' => $book_id,
+        'user_id' => $user_id,
+        'issue_date_time' => date('Y-m-d h:i:s'),
+        'expected_return_date' => $expected_return_date,
+        'book_issue_status' => 'Issue'
+    ];
+
+    if ($db->insert('lms_issue_book', $data)) {
+        echo 'insert';
+    } else {
+        echo $db->getLastError();
+    }
+}
+
+// View Issued Book
+if (isset($_POST['action']) && $_POST['action'] == 'view_issue_book') {
+    $id = $_POST['id'];
+    $db->join("lms_book", "lms_book.book_isbn_number=lms_issue_book.book_id", "INNER");
+    $db->join("lms_user", "lms_user.user_unique_id=lms_issue_book.user_id", "INNER");
+    $db->where("lms_issue_book.issue_book_id", $id);
+    $data = $db->getOne("lms_issue_book","lms_user.*, lms_book.*, lms_issue_book.*");
+    // print_r($data);
+    echo json_encode($data);
 }

@@ -24,7 +24,7 @@ $(document).ready(function() {
         scrollX: true,
         responsive: true,
         lengthChange: false,
-        autoWidth: true,
+        autoWidth: false,
         retrieve: true,
         paging: true,
         buttons: ["copy", "excel", "pdf", "print", "colvis"]
@@ -546,4 +546,115 @@ $(document).ready(function() {
       }
     });
   }
+
+  // autocomplete ISBN Number
+  $("#book_id").keyup(function() {
+    var query = $("#book_id").val();
+    $("#book-id").css("display", "block");
+    if (query.length == 2) {
+      $.ajax({
+        type: "POST",
+        url: "lib/action.php",
+        data: { action: "query_book", query: query },
+        success: function(response) {
+          $("#book-id").html(response);
+        }
+      });
+    }
+    if (query.length == 0) {
+      $("#book-id").css("display", "none");
+    }
+  });
+
+  $("body").on("click", ".isbn_number_search", function() {
+    var queries = $("#isbn_number_text").text();
+    $("#book_id").val(queries);
+    $("#book-id").css("display", "none");
+  });
+
+  // autocomplete User Unique ID
+  $("#user_id").keyup(function() {
+    var query = $("#user_id").val();
+    $("#user-id").css("display", "block");
+    if (query.length == 2) {
+      $.ajax({
+        type: "POST",
+        url: "lib/action.php",
+        data: { action: "query_user", query: query },
+        success: function(response) {
+          $("#user-id").html(response);
+        }
+      });
+    }
+    if (query.length == 0) {
+      $("#user-id").css("display", "none");
+    }
+  });
+
+  $("body").on("click", ".user_search", function() {
+    var queries = $("#user_text").text();
+    $("#user_id").val(queries);
+    $("#user-id").css("display", "none");
+  });
+
+  // Add Issue Book
+  $("#issue_book_add_btn").click(function(e) {
+    e.preventDefault();
+    $("#issue_book_add_btn").val("Please Wait...");
+    $.ajax({
+      type: "POST",
+      url: "lib/action.php",
+      data: $("#issue_book_add_form").serialize() + "&action=add_issue_book",
+      success: function(response) {
+        $("#issue_book_add_btn").val("Add Issue Book");
+        $("#issue_book_add_form")[0].reset();
+        $("#add_issue_book_modal").modal("hide");
+        if (response == "insert") {
+          Toast.fire({
+            icon: "success",
+            title: "Book Issued Successfully!"
+          });
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: response
+          });
+        }
+        fetchIssueBook();
+
+        // console.log(response);
+      }
+    });
+  });
+
+  // View Issued Book
+  $("body").on("click", ".viewIssue", function(e) {
+    e.preventDefault();
+    id = $(this).attr("id");
+    $.ajax({
+      type: "POST",
+      url: "lib/action.php",
+      data: { action: "view_issue_book", id: id },
+      success: function(response) {
+        data = JSON.parse(response);
+        $("#view_isbn_number").text(data.book_isbn_number);
+        $("#view_book_name").text(data.book_name);
+        $("#book_author").text(data.book_author);
+        $("#view_user_unique_id").text(data.user_unique_id);
+        $("#view_user_name").text(data.user_name);
+        $("#view_user_address").text(data.user_address);
+        $("#view_user_contact_no").text(data.user_contact_no);
+        $("#view_user_email").text(data.user_email_address);
+        $("#view_user_image").attr('src','assets/dist/img/user/'+data.user_profile);
+        $("#view_book_issue_date").text(data.issue_date_time);
+        $("#view_book_return_date").text(data.return_date_time);
+        $("#view_book_status").text(data.book_issue_status);
+        if (data.book_fines != null) {
+          $("#view_fines").text(data.book_fines);
+        }else{
+          $("#view_fines").text('0.00');
+        }        
+      }
+    });
+  });
 });

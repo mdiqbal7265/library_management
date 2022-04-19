@@ -76,7 +76,7 @@
 
 <!-- Category Add Modal -->
 <div class="modal fade" id="add_issue_book_modal">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Add Issue Book</h4>
@@ -84,18 +84,32 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form action="" method="post" id="issue_book_add_form">
+            <form action="" method="post" id="issue_book_add_form">
+                <div class="modal-body">
                     <div class="form-group">
-                        <label for="author_name">Book Name</label>
-                        <input type="text" class="form-control" placeholder="Enter Book Name" name="book_name">
+                        <label for="author_name">Book ISBN Number</label>
+                        <input type="text" class="form-control" placeholder="Enter Book ISBN number" id="book_id" name="book_id">
+                        <ul class="list-group" id="book-id">
+
+                        </ul>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <input type="submit" value="Add Book" class="btn btn-primary" id="book_add_btn">
-            </div>
+                    <div class="form-group">
+                        <label for="author_name">User Unique Id</label>
+                        <input type="text" class="form-control" placeholder="Enter User Unique Id" id="user_id" name="user_id">
+                        <ul class="list-group" id="user-id">
+
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label for="expected_return_date">Expected Return Date</label>
+                        <input type="date" class="form-control" placeholder="Enter Return Date" name="expected_return_date">
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <input type="submit" value="Add Issue Book" class="btn btn-primary" id="issue_book_add_btn">
+                </div>
+            </form>
         </div>
         <!-- /.modal-content -->
     </div>
@@ -105,86 +119,86 @@
 
 <!-- Category Edit Modal -->
 
-<div class="modal fade" id="edit_book_modal">
+<div class="modal fade" id="view_book_modal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Edit Book</h4>
+                <h4 class="modal-title">View Book</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="" method="post" id="edit_book_form">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <input type="hidden" name="id" id="id">
-                                <label for="book_name">Book Name</label>
-                                <input type="text" class="form-control" id="book_name" placeholder="Enter Book Name" name="book_name">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label>Select Author</label>
-                                <span class="badge badge-success" id="book_author_badge"></span>
-                                <select class="form-control select2 select2-danger" id="book_author" name="book_author" data-dropdown-css-class="select2-danger" style="width: 100%;">
-                                    <?php foreach ($author as $v) : ?>
-                                        <option value="<?= $v['author_name'] ?>"><?= $v['author_name'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label>Select Category</label>
-                                <span class="badge badge-success" id="book_category_badge"></span>
-                                <select class="form-control select2 select2-danger" id="book_category" name="book_category" data-dropdown-css-class="select2-danger" style="width: 100%;">
-                                    <?php foreach ($category as $v) : ?>
-                                        <option value="<?= $v['category_name'] ?>"><?= $v['category_name'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label>Select Location Rack</label>
-                                <span class="badge badge-success" id="book_location_rack_badge"></span>
-                                <select class="form-control select2 select2-danger" id="book_location_rack" name="book_location_rack" data-dropdown-css-class="select2-danger" style="width: 100%;">
-                                    <?php foreach ($location_rack as $v) : ?>
-                                        <option value="<?= $v['location_rack_name'] ?>"><?= $v['location_rack_name'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="author_name">Book ISBN Number</label>
-                                <input type="text" class="form-control" id="book_isbn_number" placeholder="Enter Book ISBN Number" name="book_isbn_number">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="author_name">No. of Copy</label>
-                                <input type="text" class="form-control" placeholder="Enter Book No of Copy" id="book_no_of_copy" name="book_no_of_copy">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                            <input type="checkbox" class="custom-control-input" id="customSwitch4" name="book_status">
-                            <label class="custom-control-label" for="customSwitch4">Status (Enable- green / Disable- red)</label>
-                        </div>
-                    </div>
-                </form>
+                <h3>Book Details</h3>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td>BOOK ISBN NUMBER</td>
+                            <td id="view_isbn_number"></td>
+                        </tr>
+                        <tr>
+                            <td>BOOK NAME</td>
+                            <td id="view_book_name"></td>
+                        </tr>
+                        <tr>
+                            <td>Author</td>
+                            <td id="book_author"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>User Details</h3>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td>User Unique ID</td>
+                            <td id="view_user_unique_id"></td>
+                        </tr>
+                        <tr>
+                            <td>User Name</td>
+                            <td id="view_user_name"></td>
+                        </tr>
+                        <tr>
+                            <td>User Address</td>
+                            <td id="view_user_address"></td>
+                        </tr>
+                        <tr>
+                            <td>User Contact No</td>
+                            <td id="view_user_contact_no"></td>
+                        </tr>
+                        <tr>
+                            <td>User Email</td>
+                            <td id="view_user_email"></td>
+                        </tr>
+                        <tr>
+                            <td>User Image</td>
+                            <td><img src="" alt="" id="view_user_image" class="img-thumbnail img-fluid" width="64px"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>Issue Book Details</h3>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td>BOOK Issue Date</td>
+                            <td id="view_book_issue_date"></td>
+                        </tr>
+                        <tr>
+                            <td>BOOK Return Date</td>
+                            <td id="view_book_return_date"></td>
+                        </tr>
+                        <tr>
+                            <td>Book Issue Status</td>
+                            <td id="view_book_status"></td>
+                        </tr>
+                        <tr>
+                            <td>Total Fines</td>
+                            <td id="view_fines"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <input type="submit" value="Update Book" class="btn btn-primary" id="update_book_btn">
             </div>
         </div>
         <!-- /.modal-content -->

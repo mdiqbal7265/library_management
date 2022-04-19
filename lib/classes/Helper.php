@@ -116,5 +116,19 @@ class Helper
         }
     }
 
+    public function menu_active($file_name){
+        if(basename($_SERVER['PHP_SELF']) == $file_name){
+            echo "active";
+        }else{
+            echo "";
+        }
+    }
+
+    public function getTitle(){
+        $title = ucfirst(basename($_SERVER['PHP_SELF'], '.php'));
+        $title = str_replace('_', '', $title);
+        echo $title;
+    }
+
     
 }

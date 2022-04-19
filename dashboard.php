@@ -1,5 +1,4 @@
 <?php include 'inc/header.php'; ?>
-
 <?php include 'inc/main_sidebar.php'; ?>
 
 <!-- Content Wrapper. Contains page content -->

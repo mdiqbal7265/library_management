@@ -35,45 +35,51 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
                         <li class="nav-item">
-                            <a href="dashboard.php" class="nav-link active">
+                            <a href="dashboard.php" class="nav-link <?= $helper->menu_active('dashboard.php'); ?>">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="category.php" class="nav-link">
+                            <a href="category.php" class="nav-link <?= $helper->menu_active('category.php'); ?>">
                                 <i class="nav-icon fa fa-tasks"></i>
                                 <p>Category</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="author.php" class="nav-link">
+                            <a href="author.php" class="nav-link <?= $helper->menu_active('author.php'); ?>">
                                 <i class="nav-icon fa fa-user"></i>
                                 <p>Author</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="location_rack.php" class="nav-link">
+                            <a href="location_rack.php" class="nav-link <?= $helper->menu_active('location_rack.php'); ?>">
                                 <i class="nav-icon fa fa-cubes"></i>
                                 <p>Location Rack</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="book.php" class="nav-link">
+                            <a href="book.php" class="nav-link <?= $helper->menu_active('book.php'); ?>">
                                 <i class="nav-icon fa fa-book"></i>
                                 <p>Book</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="user.php" class="nav-link">
+                            <a href="user.php" class="nav-link <?= $helper->menu_active('user.php'); ?>">
                                 <i class="nav-icon fa fa-users"></i>
                                 <p>User</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="issue-book.php" class="nav-link">
-                                <i class="nav-icon fa fa-books"></i>
+                            <a href="issue-book.php" class="nav-link <?= $helper->menu_active('issue-book.php'); ?>">
+                                <i class="nav-icon fa fa-book-open"></i>
                                 <p>Issue Book</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="setting.php" class="nav-link <?= $helper->menu_active('setting.php'); ?>">
+                                <i class="nav-icon fa fa-cogs"></i>
+                                <p>Setting</p>
                             </a>
                         </li>
                         <li class="nav-item">
