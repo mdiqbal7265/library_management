@@ -25,3 +25,4 @@ if($_SESSION['user_type'] == 'User'){
 $author = $db->get('lms_author');
 $category = $db->get('lms_category');
 $location_rack = $db->get('lms_location_rack');
+$setting = $db->getOne('lms_setting');

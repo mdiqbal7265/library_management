@@ -563,7 +563,37 @@ if (isset($_POST['action']) && $_POST['action'] == 'view_issue_book') {
     $db->join("lms_book", "lms_book.book_isbn_number=lms_issue_book.book_id", "INNER");
     $db->join("lms_user", "lms_user.user_unique_id=lms_issue_book.user_id", "INNER");
     $db->where("lms_issue_book.issue_book_id", $id);
-    $data = $db->getOne("lms_issue_book","lms_user.*, lms_book.*, lms_issue_book.*");
+    $data = $db->getOne("lms_issue_book", "lms_user.*, lms_book.*, lms_issue_book.*");
     // print_r($data);
     echo json_encode($data);
+}
+
+// Setting Update
+
+if (isset($_POST['action']) && $_POST['action'] == 'setting_update') {
+    $library_name = $validation->sanitize_data($_POST['library_name']);
+    $library_contact_no = $validation->sanitize_data($_POST['library_contact_no']);
+    $library_total_book_issue_day = $validation->sanitize_data($_POST['library_total_book_issue_day']);
+    $library_issue_total_book_per_user = $validation->sanitize_data($_POST['library_issue_total_book_per_user']);
+    $library_address = $validation->sanitize_data($_POST['library_address']);
+    $library_email_address = $validation->sanitize_data($_POST['library_email_address']);
+    $library_one_day_fine = $validation->sanitize_data($_POST['library_one_day_fine']);
+    $library_currency = $validation->sanitize_data($_POST['library_currency']);
+
+    $data = [
+        'library_name' => $library_name,
+        'library_address' => $library_address,
+        'library_contact_number' => $library_contact_no,
+        'library_email_address' => $library_email_address,
+        'library_total_book_issue_day' => $library_total_book_issue_day,
+        'library_one_day_fine' => number_format((float)$library_one_day_fine, 2, '.', ','),
+        'library_issue_total_book_per_user' => $library_issue_total_book_per_user,
+        'library_currency' => $library_currency,
+    ];
+    $db->where('setting_id', 1);
+    if ($db->update('lms_setting', $data)) {
+        echo 'update';
+    } else {
+        echo $db->getLastError();
+    }
 }

@@ -645,15 +645,47 @@ $(document).ready(function() {
         $("#view_user_address").text(data.user_address);
         $("#view_user_contact_no").text(data.user_contact_no);
         $("#view_user_email").text(data.user_email_address);
-        $("#view_user_image").attr('src','assets/dist/img/user/'+data.user_profile);
+        $("#view_user_image").attr(
+          "src",
+          "assets/dist/img/user/" + data.user_profile
+        );
         $("#view_book_issue_date").text(data.issue_date_time);
         $("#view_book_return_date").text(data.return_date_time);
         $("#view_book_status").text(data.book_issue_status);
         if (data.book_fines != null) {
           $("#view_fines").text(data.book_fines);
-        }else{
-          $("#view_fines").text('0.00');
-        }        
+        } else {
+          $("#view_fines").text("0.00");
+        }
+      }
+    });
+  });
+
+  // Setting Update
+  $("#setting_update_btn").click(function(e) {
+    e.preventDefault();
+    $("#setting_update_btn").val("Please Wait...");
+    $.ajax({
+      type: "POST",
+      url: "lib/action.php",
+      data: $("#setting_update_form").serialize() + "&action=setting_update",
+      success: function(response) {
+        $("#setting_update_btn").val("Update Setting");
+        $("#setting_update_form")[0].reset();
+        if (response == "update") {
+          Toast.fire({
+            icon: "success",
+            title: "Setting Updated Successfully!"
+          });
+          setTimeout(() => {
+            location = 'setting.php'
+          }, 2000);
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: response
+          });
+        }
       }
     });
   });
