@@ -21,6 +21,13 @@
     <link rel="stylesheet" href="assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="assets/dist/css/adminlte.min.css">
+    <style>
+        .library_name {
+            margin: 0px 245px;
+            font-weight: bold;
+            color: rgba(0,0,0,.5)
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -40,7 +47,9 @@
                     <a href="#" class="nav-link">Contact</a>
                 </li>
             </ul>
-
+            <ul class="navbar-nav">
+                <h3 class="library_name"><?= $setting['library_name'] ?></h3>
+            </ul>
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <!-- Navbar Search -->

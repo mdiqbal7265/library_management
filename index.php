@@ -2,7 +2,11 @@
 
 session_start();
 if (isset($_SESSION['email'])) {
-    header('location: dashboard.php');
+    if(isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'Admin'){
+        header('location: dashboard.php');
+    }else if(isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'User'){
+        header('location: user-dashboard.php');
+    }
 }
 
 ?>
@@ -281,7 +285,7 @@ if (isset($_SESSION['email'])) {
                                     title: 'Login Successfully. Please Wait. We will redirect you to dashboard!'
                                 });
                                 setTimeout(() => {
-                                    window.location = 'dashboard.php';
+                                    window.location = 'user-dashboard.php';
                                 }, 2000);
                             } else if (response == "password_not_matched") {
                                 Toast.fire({

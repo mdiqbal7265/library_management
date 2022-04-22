@@ -1,5 +1,5 @@
 <?php include 'inc/header.php'; ?>
-
+<?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] != 'Admin'){ header('Location: index.php'); } ?>
 <?php include 'inc/main_sidebar.php'; ?>
 
 <!-- Content Wrapper. Contains page content -->

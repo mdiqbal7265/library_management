@@ -597,3 +597,137 @@ if (isset($_POST['action']) && $_POST['action'] == 'setting_update') {
         echo $db->getLastError();
     }
 }
+
+
+/*****************
+ * 
+ * User Section
+ * 
+ *****************/
+
+// Fetch Last Issue Book By User Id
+if (isset($_POST['action']) && $_POST['action'] == 'fetchLastIssueBook') {
+    $email = $_SESSION['email'];
+    $db->where('user_email_address', $email);
+    $user = $db->getOne('lms_user');
+    $unique_id = $user['user_unique_id'];
+    $output = '';
+    $db->join("lms_book", "lms_book.book_isbn_number=lms_issue_book.book_id", "INNER");
+    $db->where('lms_issue_book.user_id', $unique_id);
+    $data = $db->get('lms_issue_book', 3, 'lms_book.book_name, lms_issue_book.*');
+    if ($data) {
+        foreach ($data as $key => $value) {
+            $output .= "<tr>
+                <td>{$value['book_id']}</td>
+                <td>{$value['book_name']}</td>
+                <td>" . date("d M Y, H:i A", strtotime($value['issue_date_time'])) . "</td>
+                <td>" . date("d M Y", strtotime($value['expected_return_date'])) . "</td>
+                <td>{$value['book_fines']}</td>
+                <td><span class='badge badge-info'>" . $value['book_issue_status'] . "</span></td>
+            </tr>";
+        }
+
+        echo $output;
+    } else {
+        echo '<h2 class="text-danger">No Issue Book available here!</h2>';
+    }
+}
+
+// Fetch user Issue Book By Unique Id
+if (isset($_POST['action']) && $_POST['action'] == 'fetchUserIssueBook') {
+    $email = $_SESSION['email'];
+    $db->where('user_email_address', $email);
+    $user = $db->getOne('lms_user');
+    $unique_id = $user['user_unique_id'];
+    $output = '';
+    $db->join("lms_book", "lms_book.book_isbn_number=lms_issue_book.book_id", "INNER");
+    $db->where('lms_issue_book.user_id', $unique_id);
+    $data = $db->get('lms_issue_book', 3, 'lms_book.book_name, lms_issue_book.*');
+    if ($data) {
+        foreach ($data as $key => $value) {
+            $output .= "<tr>
+                <td>{$value['book_id']}</td>
+                <td>{$value['book_name']}</td>
+                <td>" . date("d M Y, H:i A", strtotime($value['issue_date_time'])) . "</td>
+                <td>" . date("d M Y", strtotime($value['expected_return_date'])) . "</td>
+                <td>{$value['book_fines']}</td>
+                <td><span class='badge badge-info'>" . $value['book_issue_status'] . "</span></td>
+            </tr>";
+        }
+
+        echo $output;
+    } else {
+        echo '<h2 class="text-danger">No Issue Book available here!</h2>';
+    }
+}
+
+if (isset($_POST['action']) && $_POST['action'] == 'fetchAllBook') {
+    $output = '';
+    $data = $db->get('lms_book');
+    if ($data) {
+        foreach ($data as $key => $value) {
+            $output .= "<tr>
+                <td>{$value['book_name']}</td>
+                <td>{$value['book_isbn_number']}</td>
+                <td>{$value['book_category']}</td>
+                <td>{$value['book_author']}</td>
+                <td>{$value['book_no_of_copy']}</td>
+                <td>" . ($value['book_status'] == 'Enable' ? '<span class="badge badge-success">Available</span>' : '<span class="badge badge-danger">Unavailable</span>') . "</td>
+                <td>" . date("d M Y, H:i A", strtotime($value['book_added_on'])) . "</td>
+            </tr>";
+        }
+
+        echo $output;
+    } else {
+        echo '<h2 class="text-danger">No Book available here!</h2>';
+    }
+}
+
+// User Profile Update
+if (isset($_POST['action']) && $_POST['action'] == 'update_profile') {
+    $id = $_POST['id'];
+    $name = $validation->sanitize_data($_POST['name']);
+    $email = $validation->sanitize_data($_POST['email']);
+    $mobile = $validation->sanitize_data($_POST['mobile']);
+    $address = $validation->sanitize_data($_POST['address']);
+
+
+
+    $data = [
+        'user_name' => $name,
+        'user_contact_no' => $email,
+        'user_contact_no' => $mobile,
+        'user_address' => $address,
+    ];
+    $db->where('user_id', $id);
+    if ($db->update('lms_user', $data)) {
+        echo 'success';
+    } else {
+        echo $db->getLastError();
+    }
+}
+
+// User Change Password
+if (isset($_POST['action']) && $_POST['action'] == 'change_pass') {
+    $id = $_POST['user_id'];
+    $old_password = $validation->sanitize_data($_POST['old_password']);
+    $new_password = $validation->sanitize_data($_POST['new_password']);
+    $db->where('user_id', $id);
+    $user = $db->getOne('lms_user');
+    $_password = $user['user_password'];
+    $_new_password = password_hash($new_password, PASSWORD_BCRYPT);
+
+    if (password_verify($old_password, $_password)) {
+        $data = [
+            'user_password' => $_new_password
+        ];
+        $db->where('user_id', $id);
+        if ($db->update('lms_user', $data)) {
+            echo 'success';
+        } else {
+            echo $db->getLastError();
+        }
+    } else {
+        echo 'old_password_wrong';
+    }
+}
